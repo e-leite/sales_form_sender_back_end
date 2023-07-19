@@ -48,7 +48,7 @@ describe("CreateSalesOrderController", () => {
     const httpRequest: HttpRequest<InputCreateSalesOrderDto> = {
       body: {
         salesDate: null,
-        invoiceDate: new Date(Date.now()),
+        invoiceDate: new Date(),
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
@@ -82,7 +82,7 @@ describe("CreateSalesOrderController", () => {
 
     const httpRequest: HttpRequest<InputCreateSalesOrderDto> = {
       body: {
-        salesDate: new Date(Date.now()),
+        salesDate: new Date(),
         invoiceDate: null,
         userId: 1,
         userName: "any_user",
