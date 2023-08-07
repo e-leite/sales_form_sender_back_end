@@ -25,8 +25,12 @@ class CreateSalesOrderController implements IController {
     const salesDt = new Date(salesDate);
     const invoiceDt = new Date(invoiceDate);
 
-    const requiredFields = ["salesDate", "invoiceDate"];
-    const requiredFieldsTranslated = ["Data do pedido", "Data de faturamento"];
+    const requiredFields = ["salesDate", "invoiceDate", "userId"];
+    const requiredFieldsTranslated = [
+      "Data do pedido",
+      "Data de faturamento",
+      "Id do usuário",
+    ];
 
     for (const field of requiredFields) {
       if (httpRequest.body?.[field] === null) {
@@ -162,5 +166,40 @@ describe("CreateSalesOrderController", () => {
     expect(response?.body).toBe(
       "Data de faturamento não pode ser menor que data da solicitação.",
     );
+  });
+
+  test("Should return status code 400 if userId is null.", async () => {
+    const sut = new CreateSalesOrderController();
+
+    const httpRequest = {
+      body: {
+        salesDate: "2023-08-01",
+        invoiceDate: "2023-08-05",
+        userId: null,
+        userName: "any_user",
+        userEmail: "any_email",
+        managerName: "any_manager",
+        managerEmail: "anay_email",
+        customerId: 1,
+        customerName: "any_customer",
+        customerCity: "any_city",
+        customerState: "any_state",
+        customerPaymentTerm: "any_term",
+        shipBase: "any_base",
+        shipmentType: "any_type",
+        shippingCompanyName: null,
+        shippingCompanyContact: null,
+        shippingCompanyPhone: null,
+        shippingCompanyEmail: null,
+        mapsLink: null,
+        addressHasUnpavedRoad: true,
+        unpavedRoadSize: null,
+        shippingNote: null,
+        status: "string",
+      },
+    };
+
+    const response = await sut.handle(httpRequest);
+    expect(response?.statusCode).toBe(400);
   });
 });
