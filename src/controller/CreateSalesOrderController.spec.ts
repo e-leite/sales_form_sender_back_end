@@ -25,11 +25,12 @@ class CreateSalesOrderController implements IController {
     const salesDt = new Date(salesDate);
     const invoiceDt = new Date(invoiceDate);
 
-    const requiredFields = ["salesDate", "invoiceDate", "userId"];
+    const requiredFields = ["salesDate", "invoiceDate", "userId", "userName"];
     const requiredFieldsTranslated = [
       "Data do pedido",
       "Data de faturamento",
       "Id do usuário",
+      "Nome do usuário",
     ];
 
     for (const field of requiredFields) {
@@ -201,5 +202,42 @@ describe("CreateSalesOrderController", () => {
 
     const response = await sut.handle(httpRequest);
     expect(response?.statusCode).toBe(400);
+  });
+
+  test("Should return status code 400 if userNames is null", async () => {
+    const sut = createSut();
+
+    const httpRequest = {
+      body: {
+        salesDate: "2023-08-01",
+        invoiceDate: "2023-08-05",
+        userId: 1,
+        userName: null,
+        userEmail: "any_email",
+        managerName: "any_manager",
+        managerEmail: "anay_email",
+        customerId: 1,
+        customerName: "any_customer",
+        customerCity: "any_city",
+        customerState: "any_state",
+        customerPaymentTerm: "any_term",
+        shipBase: "any_base",
+        shipmentType: "any_type",
+        shippingCompanyName: null,
+        shippingCompanyContact: null,
+        shippingCompanyPhone: null,
+        shippingCompanyEmail: null,
+        mapsLink: null,
+        addressHasUnpavedRoad: true,
+        unpavedRoadSize: null,
+        shippingNote: null,
+        status: "string",
+      },
+    };
+
+    const response = await sut.handle(httpRequest);
+
+    expect(response?.statusCode).toBe(400);
+    expect(response?.body).toBe("O campo Nome do usuário não pode ser nulo.");
   });
 });
