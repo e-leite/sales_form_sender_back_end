@@ -20,7 +20,8 @@ const badRequest = (message: string): HttpResponse<string> => {
 
 class CreateSalesOrderController implements IController {
   async handle(httpRequest: HttpRequest<any>) {
-    const { salesDate, invoiceDate } = httpRequest.body;
+    const { salesDate, invoiceDate, unpavedRoadSize, addressHasUnpavedRoad } =
+      httpRequest.body;
 
     const salesDt = new Date(salesDate);
     const invoiceDt = new Date(invoiceDate);
@@ -73,6 +74,10 @@ class CreateSalesOrderController implements IController {
       return badRequest(
         "Data de faturamento não pode ser menor que data da solicitação.",
       );
+    }
+
+    if (addressHasUnpavedRoad && unpavedRoadSize === null) {
+      return badRequest("Km de estrada de chão não pode ser nulo.");
     }
   }
 }
@@ -677,5 +682,41 @@ describe("CreateSalesOrderController", () => {
 
     expect(response?.statusCode).toBe(400);
     expect(response?.body).toBe("O campo Status não pode ser nulo.");
+  });
+
+  test("Should return status code 400 if addressHasUnpavedRoad is true and unpavedRoadSize is null.", async () => {
+    const sut = createSut();
+
+    const httpRequest = {
+      body: {
+        salesDate: "2023-08-01",
+        invoiceDate: "2023-08-05",
+        userId: 1,
+        userName: "any_user",
+        userEmail: "any_email",
+        managerName: "any_manager",
+        managerEmail: "anay_email",
+        customerId: 1,
+        customerName: "any_customer",
+        customerCity: "any_city",
+        customerState: "any_state",
+        customerPaymentTerm: "any_term",
+        shipBase: "any_base",
+        shipmentType: "any_type",
+        shippingCompanyName: null,
+        shippingCompanyContact: null,
+        shippingCompanyPhone: null,
+        shippingCompanyEmail: null,
+        mapsLink: null,
+        addressHasUnpavedRoad: true,
+        unpavedRoadSize: null,
+        shippingNote: null,
+        status: "string",
+      },
+    };
+
+    const response = await sut.handle(httpRequest);
+    expect(response?.statusCode).toBe(400);
+    expect(response?.body).toBe("Km de estrada de chão não pode ser nulo.");
   });
 });
