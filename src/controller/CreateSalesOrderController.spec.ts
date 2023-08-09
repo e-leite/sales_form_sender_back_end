@@ -19,6 +19,7 @@ const badRequest = (message: string): HttpResponse<string> => {
 };
 
 class CreateSalesOrderController implements IController {
+  constructor(private readonly createSalesOrderRepository: any) {}
   async handle(httpRequest: HttpRequest<any>) {
     const { salesDate, invoiceDate, unpavedRoadSize, addressHasUnpavedRoad } =
       httpRequest.body;
@@ -79,18 +80,35 @@ class CreateSalesOrderController implements IController {
     if (addressHasUnpavedRoad && unpavedRoadSize === null) {
       return badRequest("Km de estrada de chão não pode ser nulo.");
     }
+
+    const createdSalesOrder = this.createSalesOrderRepository.execute();
+
+    if (createdSalesOrder) {
+      return {
+        statusCode: 201,
+        body: createdSalesOrder,
+      };
+    }
   }
 }
 
-const createSut = (): CreateSalesOrderController => {
-  const createSalesOrderController = new CreateSalesOrderController();
+class CreateSalesOrderRepositorySpy {
+  public createdSalesOrder: any;
+  public execute() {
+    return this.createdSalesOrder;
+  }
+}
+const createSut = () => {
+  const createSalesOrderRepositorySpy = new CreateSalesOrderRepositorySpy();
 
-  return createSalesOrderController;
+  const sut = new CreateSalesOrderController(createSalesOrderRepositorySpy);
+
+  return { sut, createSalesOrderRepositorySpy };
 };
 
 describe("CreateSalesOrderController", () => {
   test("Should return status code 400 if salesDate is null.", async () => {
-    const sut = new CreateSalesOrderController();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -126,7 +144,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if invoiceDate is null.", async () => {
-    const sut = new CreateSalesOrderController();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -164,7 +182,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if salesDate is less than invoiceDate.", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -202,7 +220,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if userId is null.", async () => {
-    const sut = new CreateSalesOrderController();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -237,7 +255,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if userNames is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -274,7 +292,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if userEmail is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -311,7 +329,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if managerName is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -348,7 +366,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if managerEmail is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -385,7 +403,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if customerId is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -422,7 +440,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if customerId is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -459,7 +477,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if customerCity is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -496,7 +514,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if customerState is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -533,7 +551,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if customerPaymentTerm is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -572,7 +590,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if shipBase is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -611,7 +629,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if shipmentType is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -648,7 +666,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if status is null", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -685,7 +703,7 @@ describe("CreateSalesOrderController", () => {
   });
 
   test("Should return status code 400 if addressHasUnpavedRoad is true and unpavedRoadSize is null.", async () => {
-    const sut = createSut();
+    const { sut } = createSut();
 
     const httpRequest = {
       body: {
@@ -718,5 +736,45 @@ describe("CreateSalesOrderController", () => {
     const response = await sut.handle(httpRequest);
     expect(response?.statusCode).toBe(400);
     expect(response?.body).toBe("Km de estrada de chão não pode ser nulo.");
+  });
+
+  test("Should return status code 201 if Sales Order already has a record", async () => {
+    const { sut, createSalesOrderRepositorySpy } = createSut();
+
+    const httpRequest = {
+      body: {
+        salesDate: "2023-08-01",
+        invoiceDate: "2023-08-05",
+        userId: 1,
+        userName: "any_user",
+        userEmail: "any_email",
+        managerName: "any_manager",
+        managerEmail: "anay_email",
+        customerId: 1,
+        customerName: "any_customer",
+        customerCity: "any_city",
+        customerState: "any_state",
+        customerPaymentTerm: "any_term",
+        shipBase: "any_base",
+        shipmentType: "any_type",
+        shippingCompanyName: null,
+        shippingCompanyContact: null,
+        shippingCompanyPhone: null,
+        shippingCompanyEmail: null,
+        mapsLink: null,
+        addressHasUnpavedRoad: true,
+        unpavedRoadSize: 7,
+        shippingNote: null,
+        status: "string",
+      },
+    };
+
+    const createdSalesOrder = { id: 1, ...httpRequest.body };
+    createSalesOrderRepositorySpy.createdSalesOrder = createdSalesOrder;
+
+    const response = await sut.handle(httpRequest);
+
+    expect(response?.statusCode).toBe(201);
+    expect(response?.body).toEqual(createdSalesOrder);
   });
 });
