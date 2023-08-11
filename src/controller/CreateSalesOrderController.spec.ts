@@ -32,7 +32,7 @@ interface CreateSalesOrderInputDto {
   userId: number;
   userName: string;
   userEmail: string;
-  usergetFirstPriceRange: boolean;
+  userGetFirstPriceRange: boolean;
   managerName: string;
   managerEmail: string;
   customerId: number;
@@ -60,7 +60,7 @@ interface CreateSalesOrderOutputDto {
   userId: number;
   userName: string;
   userEmail: string;
-  usergetFirstPriceRange: boolean;
+  userGetFirstPriceRange: boolean;
   managerName: string;
   managerEmail: string;
   customerId: number;
@@ -116,7 +116,7 @@ class CreateSalesOrderController implements IController {
       "userId",
       "userName",
       "userEmail",
-      "usergetFirstPriceRange",
+      "userGetFirstPriceRange",
       "managerName",
       "managerEmail",
       "customerId",
@@ -234,7 +234,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -271,7 +271,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -310,7 +310,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -349,7 +349,7 @@ describe("CreateSalesOrderController", () => {
         userId: null,
         userName: "any_user",
         userEmail: "any_email",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -385,7 +385,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: null,
         userEmail: "any_email",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -413,7 +413,7 @@ describe("CreateSalesOrderController", () => {
     expect(response?.body).toBe("O campo Nome do usuário não pode ser nulo.");
   });
 
-  test("Should return status code 400 if usergetFirstPriceRange is null", async () => {
+  test("Should return status code 400 if userGetFirstPriceRange is null", async () => {
     const { sut } = createSut();
 
     const httpRequest = {
@@ -423,7 +423,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_email",
-        usergetFirstPriceRange: null,
+        userGetFirstPriceRange: null,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -452,6 +452,7 @@ describe("CreateSalesOrderController", () => {
       "O campo Usuário recebe primeira faixa de preço não pode ser nulo.",
     );
   });
+
   test("Should return status code 400 if userEmail is null", async () => {
     const { sut } = createSut();
 
@@ -462,7 +463,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: null,
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -502,7 +503,7 @@ describe("CreateSalesOrderController", () => {
         userEmail: "any_name",
         managerName: null,
         managerEmail: "anay_email",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         customerId: 1,
         customerName: "any_customer",
         customerCity: "any_city",
@@ -538,7 +539,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: null,
         customerId: 1,
@@ -576,7 +577,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: null,
@@ -614,7 +615,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -652,7 +653,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -690,7 +691,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -728,7 +729,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -768,7 +769,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -808,7 +809,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -846,7 +847,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -884,7 +885,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -921,7 +922,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -960,7 +961,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
-        usergetFirstPriceRange: false,
+        userGetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
