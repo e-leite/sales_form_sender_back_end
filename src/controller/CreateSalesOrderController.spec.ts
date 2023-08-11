@@ -1,5 +1,13 @@
+import { SalesOrder } from "../domain/SalesOrder";
+
 interface IController {
-  handle(httpRequest: HttpRequest<unknown>): Promise<unknown>;
+  handle(
+    httpRequest: HttpRequest<unknown>,
+  ): Promise<HttpResponse<SalesOrder | string>>;
+}
+
+interface ICreateSalesOrderRepository {
+  execute(inputData: any): Promise<CreateSalesOrderOutputDto>;
 }
 
 interface HttpRequest<T> {
@@ -18,9 +26,84 @@ const badRequest = (message: string): HttpResponse<string> => {
   };
 };
 
+interface CreateSalesOrderInputDto {
+  salesDate: string;
+  invoiceDate: string;
+  userId: number;
+  userName: string;
+  userEmail: string;
+  usergetFirstPriceRange: boolean;
+  managerName: string;
+  managerEmail: string;
+  customerId: number;
+  customerName: string;
+  customerCity: string;
+  customerState: string;
+  customerPaymentTerm: string;
+  shipBase: string;
+  shipmentType: string;
+  shippingCompanyName: string;
+  shippingCompanyContact: string;
+  shippingCompanyPhone: string;
+  shippingCompanyEmail: string;
+  mapsLink: string;
+  addressHasUnpavedRoad: boolean;
+  unpavedRoadSize: number;
+  shippingNote: string;
+  status: string;
+}
+
+interface CreateSalesOrderOutputDto {
+  id: number;
+  salesDate: string;
+  invoiceDate: string;
+  userId: number;
+  userName: string;
+  userEmail: string;
+  usergetFirstPriceRange: boolean;
+  managerName: string;
+  managerEmail: string;
+  customerId: number;
+  customerName: string;
+  customerCity: string;
+  customerState: string;
+  customerPaymentTerm: string;
+  shipBase: string;
+  shipmentType: string;
+  shippingCompanyName: string;
+  shippingCompanyContact: string;
+  shippingCompanyPhone: string;
+  shippingCompanyEmail: string;
+  mapsLink: string;
+  addressHasUnpavedRoad: boolean;
+  unpavedRoadSize: number;
+  shippingNote: string;
+  status: string;
+}
+
+class CreateSalesOrderRepositorySpy implements ICreateSalesOrderRepository {
+  public returnSuccess = true;
+  public async execute(
+    inputSalesOrderDto: CreateSalesOrderInputDto,
+  ): Promise<CreateSalesOrderOutputDto> {
+    if (this.returnSuccess) {
+      return {
+        id: 1,
+        ...inputSalesOrderDto,
+      };
+    } else {
+      throw new Error();
+    }
+  }
+}
+
 class CreateSalesOrderController implements IController {
-  constructor(private readonly createSalesOrderRepository: any) {}
-  async handle(httpRequest: HttpRequest<any>) {
+  constructor(
+    private readonly createSalesOrderRepository: ICreateSalesOrderRepository,
+  ) {}
+  async handle(
+    httpRequest: HttpRequest<any>,
+  ): Promise<HttpResponse<SalesOrder | string>> {
     const { salesDate, invoiceDate, unpavedRoadSize, addressHasUnpavedRoad } =
       httpRequest.body;
 
@@ -81,23 +164,55 @@ class CreateSalesOrderController implements IController {
       return badRequest("Km de estrada de chão não pode ser nulo.");
     }
 
-    const createdSalesOrder = this.createSalesOrderRepository.execute();
+    try {
+      const salesOrderOutputDto = await this.createSalesOrderRepository.execute(
+        httpRequest.body,
+      );
 
-    if (createdSalesOrder) {
+      const createdSalesOrder: SalesOrder = {
+        id: salesOrderOutputDto.id,
+        salesDate: new Date(salesOrderOutputDto.salesDate),
+        invoiceDate: new Date(salesOrderOutputDto.invoiceDate),
+        user: {
+          id: salesOrderOutputDto.userId,
+          name: salesOrderOutputDto.userName,
+          email: salesOrderOutputDto.userEmail,
+          getFirstPriceRange: false,
+          managerName: salesOrderOutputDto.managerName,
+          managerEmail: salesOrderOutputDto.managerEmail,
+        },
+        customer: {
+          id: salesOrderOutputDto.customerId,
+          name: salesOrderOutputDto.customerName,
+          city: salesOrderOutputDto.customerCity,
+          state: salesOrderOutputDto.customerState,
+          paymentTerm: salesOrderOutputDto.customerPaymentTerm,
+        },
+        shipBase: salesOrderOutputDto.shipBase,
+        shipmentType: salesOrderOutputDto.shipmentType,
+        shippingCompanyName: salesOrderOutputDto.shippingCompanyName,
+        shippingCompanyContact: salesOrderOutputDto.shippingCompanyContact,
+        shippingCompanyPhone: salesOrderOutputDto.shippingCompanyPhone,
+        shippingCompanyEmail: salesOrderOutputDto.shippingCompanyEmail,
+        mapsLink: salesOrderOutputDto.mapsLink,
+        addressHasUnpavedRoad: salesOrderOutputDto.addressHasUnpavedRoad,
+        unpavedRoadSize: salesOrderOutputDto.unpavedRoadSize,
+        status: salesOrderOutputDto.status,
+      };
+
       return {
         statusCode: 201,
         body: createdSalesOrder,
+      };
+    } catch (error) {
+      return {
+        statusCode: 500,
+        body: "Something went wrong!",
       };
     }
   }
 }
 
-class CreateSalesOrderRepositorySpy {
-  public createdSalesOrder: any;
-  public execute() {
-    return this.createdSalesOrder;
-  }
-}
 const createSut = () => {
   const createSalesOrderRepositorySpy = new CreateSalesOrderRepositorySpy();
 
@@ -117,6 +232,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
+        usergetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -153,6 +269,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
+        usergetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -191,6 +308,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
+        usergetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -229,6 +347,7 @@ describe("CreateSalesOrderController", () => {
         userId: null,
         userName: "any_user",
         userEmail: "any_email",
+        usergetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -264,6 +383,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: null,
         userEmail: "any_email",
+        usergetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -301,6 +421,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: null,
+        usergetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -340,6 +461,7 @@ describe("CreateSalesOrderController", () => {
         userEmail: "any_name",
         managerName: null,
         managerEmail: "anay_email",
+        usergetFirstPriceRange: false,
         customerId: 1,
         customerName: "any_customer",
         customerCity: "any_city",
@@ -375,6 +497,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
+        usergetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: null,
         customerId: 1,
@@ -412,6 +535,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
+        usergetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: null,
@@ -449,6 +573,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
+        usergetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -486,6 +611,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
+        usergetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -523,6 +649,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
+        usergetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -560,6 +687,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
+        usergetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -599,6 +727,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
+        usergetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -638,6 +767,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
+        usergetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -675,6 +805,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_name",
         userEmail: "any_name",
+        usergetFirstPriceRange: false,
         managerName: "any_name",
         managerEmail: "any_name",
         customerId: 1,
@@ -712,6 +843,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
+        usergetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -748,6 +880,7 @@ describe("CreateSalesOrderController", () => {
         userId: 1,
         userName: "any_user",
         userEmail: "any_email",
+        usergetFirstPriceRange: false,
         managerName: "any_manager",
         managerEmail: "anay_email",
         customerId: 1,
@@ -769,12 +902,51 @@ describe("CreateSalesOrderController", () => {
       },
     };
 
-    const createdSalesOrder = { id: 1, ...httpRequest.body };
-    createSalesOrderRepositorySpy.createdSalesOrder = createdSalesOrder;
+    createSalesOrderRepositorySpy.returnSuccess = true;
 
     const response = await sut.handle(httpRequest);
 
+    console.log(response);
+
     expect(response?.statusCode).toBe(201);
-    expect(response?.body).toEqual(createdSalesOrder);
+  });
+
+  test("Should return status code 500 if createdSalesOrderRepository throw error", async () => {
+    const { sut, createSalesOrderRepositorySpy } = createSut();
+
+    const httpRequest = {
+      body: {
+        salesDate: "2023-08-01",
+        invoiceDate: "2023-08-05",
+        userId: 1,
+        userName: "any_user",
+        userEmail: "any_email",
+        usergetFirstPriceRange: false,
+        managerName: "any_manager",
+        managerEmail: "anay_email",
+        customerId: 1,
+        customerName: "any_customer",
+        customerCity: "any_city",
+        customerState: "any_state",
+        customerPaymentTerm: "any_term",
+        shipBase: "any_base",
+        shipmentType: "any_type",
+        shippingCompanyName: null,
+        shippingCompanyContact: null,
+        shippingCompanyPhone: null,
+        shippingCompanyEmail: null,
+        mapsLink: null,
+        addressHasUnpavedRoad: true,
+        unpavedRoadSize: 7,
+        shippingNote: null,
+        status: "string",
+      },
+    };
+
+    createSalesOrderRepositorySpy.returnSuccess = false;
+
+    const response = await sut.handle(httpRequest);
+
+    expect(response?.statusCode).toBe(500);
   });
 });

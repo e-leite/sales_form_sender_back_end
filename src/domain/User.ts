@@ -1,8 +1,7 @@
 export interface User {
   id: number;
-  name: number;
+  name: string;
   email: string;
-  jobTitle: string;
   getFirstPriceRange: boolean;
   managerName: string;
   managerEmail: string;
