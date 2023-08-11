@@ -1,4 +1,4 @@
-import { SalesOrder } from "../domain/SalesOrder";
+import { SalesOrder } from "../domain/entity/SalesOrder";
 import { ICreateSalesOrderRepository } from "../domain/repository/ICreateSalesOrderRepository";
 import {
   HttpRequest,
