@@ -116,6 +116,7 @@ class CreateSalesOrderController implements IController {
       "userId",
       "userName",
       "userEmail",
+      "usergetFirstPriceRange",
       "managerName",
       "managerEmail",
       "customerId",
@@ -133,6 +134,7 @@ class CreateSalesOrderController implements IController {
       "Id do usuário",
       "Nome do usuário",
       "Email do usuário",
+      "Usuário recebe primeira faixa de preço",
       "Nome do Gerente",
       "Email do Gerente",
       "Id do cliente",
@@ -411,6 +413,45 @@ describe("CreateSalesOrderController", () => {
     expect(response?.body).toBe("O campo Nome do usuário não pode ser nulo.");
   });
 
+  test("Should return status code 400 if usergetFirstPriceRange is null", async () => {
+    const { sut } = createSut();
+
+    const httpRequest = {
+      body: {
+        salesDate: "2023-08-01",
+        invoiceDate: "2023-08-05",
+        userId: 1,
+        userName: "any_name",
+        userEmail: "any_email",
+        usergetFirstPriceRange: null,
+        managerName: "any_manager",
+        managerEmail: "anay_email",
+        customerId: 1,
+        customerName: "any_customer",
+        customerCity: "any_city",
+        customerState: "any_state",
+        customerPaymentTerm: "any_term",
+        shipBase: "any_base",
+        shipmentType: "any_type",
+        shippingCompanyName: null,
+        shippingCompanyContact: null,
+        shippingCompanyPhone: null,
+        shippingCompanyEmail: null,
+        mapsLink: null,
+        addressHasUnpavedRoad: true,
+        unpavedRoadSize: null,
+        shippingNote: null,
+        status: "string",
+      },
+    };
+
+    const response = await sut.handle(httpRequest);
+
+    expect(response?.statusCode).toBe(400);
+    expect(response?.body).toBe(
+      "O campo Usuário recebe primeira faixa de preço não pode ser nulo.",
+    );
+  });
   test("Should return status code 400 if userEmail is null", async () => {
     const { sut } = createSut();
 
@@ -905,8 +946,6 @@ describe("CreateSalesOrderController", () => {
     createSalesOrderRepositorySpy.returnSuccess = true;
 
     const response = await sut.handle(httpRequest);
-
-    console.log(response);
 
     expect(response?.statusCode).toBe(201);
   });
