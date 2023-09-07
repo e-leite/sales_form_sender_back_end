@@ -1,7 +1,14 @@
+import { PaymentTerm } from "./PaymentTerm";
+
 export interface Customer {
   id: number;
   name: string;
-  city: string;
-  state: string;
-  paymentTerm: string;
+  address: {
+    city: string;
+    state: string;
+    hasUnpavedRoad: boolean;
+    unpavedRoadSize: number;
+    mapsLink: string;
+  };
+  paymentTerm: PaymentTerm;
 }
