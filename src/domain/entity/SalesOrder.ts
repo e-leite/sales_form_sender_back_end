@@ -1,4 +1,7 @@
 import { Customer } from "./Customer";
+import { PaymentTerm } from "./PaymentTerm";
+import { ShipBase } from "./ShipBase";
+import { ShipmentType } from "./ShipmentType";
 import { User } from "./User";
 
 export interface SalesOrder {
@@ -6,15 +9,15 @@ export interface SalesOrder {
   salesDate: Date;
   invoiceDate: Date;
   user: User;
-  customer: Customer;
-  shipBase: string;
-  shipmentType: string;
-  shippingCompanyName: string;
-  shippingCompanyContact: string;
-  shippingCompanyPhone: string;
-  shippingCompanyEmail: string;
-  mapsLink: string;
-  addressHasUnpavedRoad: boolean;
-  unpavedRoadSize: number;
+  customer: Omit<Customer, "paymentTerm">;
+  ship: {
+    base: Omit<ShipBase, "daysForAvailability">;
+    type: ShipmentType;
+    shippingCompanyName: string;
+    shippingCompanyContact: string;
+    shippingCompanyPhone: string;
+    shippingCompanyEmail: string;
+  };
+  paymentTerm: PaymentTerm;
   status: string;
 }
