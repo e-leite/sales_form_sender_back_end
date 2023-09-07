@@ -43,9 +43,10 @@ export type CreateSalesOrderOutputDto = {
   customerName: string;
   customerCity: string;
   customerState: string;
-  customerPaymentTerm: string;
-  shipBase: string;
-  shipmentType: string;
+  shipBaseId: number;
+  shipBaseName: string;
+  shipmentTypeId: number;
+  shipmentTypeName: string;
   shippingCompanyName: string;
   shippingCompanyContact: string;
   shippingCompanyPhone: string;
@@ -54,5 +55,7 @@ export type CreateSalesOrderOutputDto = {
   addressHasUnpavedRoad: boolean;
   unpavedRoadSize: number;
   shippingNote: string;
+  paymentTermId: number;
+  paymentTermName: string;
   status: string;
 };
