@@ -97,19 +97,32 @@ export class CreateSalesOrderController implements IController<SalesOrder> {
         customer: {
           id: salesOrderOutputDto.customerId,
           name: salesOrderOutputDto.customerName,
-          city: salesOrderOutputDto.customerCity,
-          state: salesOrderOutputDto.customerState,
-          paymentTerm: salesOrderOutputDto.customerPaymentTerm,
+          address: {
+            city: salesOrderOutputDto.customerCity,
+            state: salesOrderOutputDto.customerState,
+            mapsLink: salesOrderOutputDto.mapsLink,
+            hasUnpavedRoad: salesOrderOutputDto.addressHasUnpavedRoad,
+            unpavedRoadSize: salesOrderOutputDto.unpavedRoadSize,
+          },
         },
-        shipBase: salesOrderOutputDto.shipBase,
-        shipmentType: salesOrderOutputDto.shipmentType,
-        shippingCompanyName: salesOrderOutputDto.shippingCompanyName,
-        shippingCompanyContact: salesOrderOutputDto.shippingCompanyContact,
-        shippingCompanyPhone: salesOrderOutputDto.shippingCompanyPhone,
-        shippingCompanyEmail: salesOrderOutputDto.shippingCompanyEmail,
-        mapsLink: salesOrderOutputDto.mapsLink,
-        addressHasUnpavedRoad: salesOrderOutputDto.addressHasUnpavedRoad,
-        unpavedRoadSize: salesOrderOutputDto.unpavedRoadSize,
+        ship: {
+          base: {
+            id: salesOrderOutputDto.shipBaseId,
+            name: salesOrderOutputDto.shipBaseName,
+          },
+          type: {
+            id: salesOrderOutputDto.shipmentTypeId,
+            type: salesOrderOutputDto.shipmentTypeName,
+          },
+          shippingCompanyName: salesOrderOutputDto.shippingCompanyName,
+          shippingCompanyContact: salesOrderOutputDto.shippingCompanyContact,
+          shippingCompanyPhone: salesOrderOutputDto.shippingCompanyPhone,
+          shippingCompanyEmail: salesOrderOutputDto.shippingCompanyEmail,
+        },
+        paymentTerm: {
+          id: salesOrderOutputDto.paymentTermId,
+          term: salesOrderOutputDto.paymentTermName,
+        },
         status: salesOrderOutputDto.status,
       };
 
